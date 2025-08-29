@@ -16,7 +16,6 @@ require("lazy").setup({
   { "nvim-lua/plenary.nvim" },
   { "nvim-telescope/telescope.nvim" },
   { "nvim-tree/nvim-tree.lua" },
-  { "jose-elias-alvarez/null-ls.nvim" },
   { "nvimdev/dashboard-nvim", event = "VimEnter", config = true },
   { "rcarriga/nvim-notify" },
 
@@ -35,9 +34,9 @@ require("lazy").setup({
 
   -- TypeScript and HTML support
   { "jose-elias-alvarez/typescript.nvim" },
-  { "jose-elias-alvarez/null-ls.nvim" },
+  { "nvimtools/none-ls.nvim" },
 
-  --git integration
+  -- Git integration
   { "lewis6991/gitsigns.nvim" },
 
   -- Colorscheme

@@ -1,4 +1,24 @@
 -- ===================================
+-- 🔌 nvim-notify Setup
+-- ===================================
+local has_notify, notify = pcall(require, "notify")
+if has_notify then
+  notify.setup({
+    background_colour = function()
+      return vim.fn.synIDattr(vim.fn.hlID("Normal"), "bg") or "#000000"
+    end,
+  })
+
+  -- Make notify the default handler AND silence deprecation warnings
+  vim.notify = function(msg, ...)
+    if msg:match("deprecated") then return end
+    notify(msg, ...)
+  end
+end
+
+
+
+-- ===================================
 -- 🚀 Neovim Main Configuration
 -- init.lua | Modern, Clean & Transparent UI
 -- ===================================
@@ -78,3 +98,4 @@ end
 
 -- Ensure syntax highlighting is enabled
 vim.cmd("syntax on")
+

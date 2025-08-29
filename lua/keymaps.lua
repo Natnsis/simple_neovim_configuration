@@ -2,7 +2,7 @@ local map = vim.api.nvim_set_keymap
 local opts = { noremap = true, silent = true }
 
 -- Double "k" in insert mode to escape
-vim.api.nvim_set_keymap('i', 'kk', '<Esc>', opts)
+map('i', 'kk', '<Esc>', opts)
 
 -- Save file with leader + w
 map('n', '<leader>w', ':w<CR>', opts)
@@ -24,3 +24,9 @@ map('n', '<leader>fg', ':Telescope live_grep<CR>', opts)
 
 -- NvimTree toggle
 map('n', '<leader>e', ':NvimTreeToggle<CR>', opts)
+
+-- Jump back to NvimTree with Ctrl+h
+map('n', '<C-h>', ':NvimTreeFocus<CR>', opts)
+
+-- Jump from tree into file window with Ctrl+l
+map('n', '<C-l>', ':wincmd l<CR>', opts)
