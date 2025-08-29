@@ -4,50 +4,67 @@
 -- ===================================
 
 -- Core modules
-require("options")           -- Set options (vim.opt)
+require("options")           -- Vim options (set, opt)
 require("keymaps")           -- Keybindings
-require("plugins")           -- Plugin manager (e.g. packer)
+require("plugins")           -- Plugin manager (Packer)
 require("config.telescope")  -- Telescope setup
 require("config.nvim-tree")  -- NvimTree setup
-require("config.prettier")   -- Prettier auto-format
-require("snippets")          -- Snippets (e.g. luasnip)
+require("config.prettier")   -- Prettier integration
+require("snippets")          -- Snippets (e.g. LuaSnip)
 require("config.dashboard")  -- Your custom dashboard (unchanged)
 
 -- ===================================
 -- 🌫️  UI: Transparent Floats & Terminal
 -- ===================================
--- Applies transparency to floating windows, terminal, and popups
--- Preserves your dashboard exactly as defined
+-- Ensures transparency for floating windows, terminal, and popups
+-- Runs after colorscheme to prevent overrides
 
+-- Fix transparency after colorscheme loads
 vim.api.nvim_create_autocmd("ColorScheme", {
   pattern = "*",
   callback = function()
-    -- Transparent floating windows (telescope, nvim-tree, lsp, etc.)
+    -- Base & float transparency
+    vim.cmd("hi! Normal guibg=NONE ctermbg=NONE")
     vim.cmd("hi! NormalFloat guibg=NONE ctermbg=NONE")
-    vim.cmd("hi! FloatBorder  guibg=NONE")
-    vim.cmd("hi! FloatTitle   guibg=NONE")
-    vim.cmd("hi! FloatShadow  guibg=NONE")
-    vim.cmd("hi! FloatShadowThrough guibg=NONE")
+    vim.cmd("hi! EndOfBuffer guibg=NONE")
 
-    -- Popup menu (completion)
-    vim.cmd("hi! Pmenu      guibg=NONE ctermbg=NONE")
-    vim.cmd("hi! PmenuSel   guibg=#2D3149 guifg=NONE")
+    -- Borders & titles
+    vim.cmd("hi! FloatBorder guibg=NONE")
+    vim.cmd("hi! FloatTitle guibg=NONE")
+    vim.cmd("hi! StatusLine guibg=NONE")
+    vim.cmd("hi! StatusLineNC guibg=NONE")
+
+    -- Popup menus (autocomplete)
+    vim.cmd("hi! Pmenu guibg=NONE ctermbg=NONE")
+    vim.cmd("hi! PmenuSel guibg=#2D3149")
     vim.cmd("hi! PmenuThumb guibg=#555555")
 
-    -- Status line (if used in floats)
-    vim.cmd("hi! StatusLine     guibg=NONE")
-    vim.cmd("hi! StatusLineNC   guibg=NONE")
+    -- Terminal-specific
+    vim.cmd("hi! terminal guibg=NONE")      -- Critical for :terminal
+    vim.cmd("hi! TermCursor guibg=NONE")
+    vim.cmd("hi! TermCursorNC guibg=NONE")
+  end,
+})
 
-    -- Terminal cursor & appearance
-    vim.cmd("hi! TermCursor     guibg=NONE")
-    vim.cmd("hi! TermCursorNC   guibg=NONE")
+-- Final failsafe: Override any late background resets
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    vim.defer_fn(function()
+      vim.cmd("hi Normal guibg=NONE")
+      vim.cmd("hi terminal guibg=NONE")
+      vim.cmd("hi NormalFloat guibg=NONE")
+    end, 100) -- Delay slightly to beat all plugins
   end,
 })
 
 -- Enhance terminal buffer appearance
 vim.api.nvim_create_autocmd("TermOpen", {
   pattern = "*",
-  command = "setlocal nonumber norelativenumber nocursorline colorcolumn= signcolumn=no listchars= winhighlight=Normal:Normal,NormalFloat:NormalFloat",
+  command = [[
+    setlocal nonumber norelativenumber nocursorline
+    setlocal colorcolumn= signcolumn=no listchars=
+    setlocal winhighlight=Normal:Normal,NormalFloat:NormalFloat
+  ]],
 })
 
 -- ===================================
@@ -59,5 +76,5 @@ vim.notify = function(msg, ...)
   require("notify")(msg, ...)
 end
 
--- Optional: Ensure syntax highlighting is on
+-- Ensure syntax highlighting is enabled
 vim.cmd("syntax on")
